@@ -1,11 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
   const watch = sequelize.define("watch", {
-    watch_id: {
+    watchId: {
       primaryKey: true,
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
     },
-    user_id: {
+    userId: {
       type: Sequelize.UUID,
       allowNull: false,
     },

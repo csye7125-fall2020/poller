@@ -6,21 +6,21 @@ const uuid = require('uuid');
 
 exports.addWatch = (watch) => {
     return Watch.create({
-        watch_id: watch.watch_id,
-        user_id: watch.user_id,
+        watchId: watch.watchId,
+        userId: watch.userId,
         zipcode: watch.zipcode
     });
 }
 
-exports.addAlert = (alerts, watch_id) => {
+exports.addAlert = (alerts, watchId) => {
     for (let i in alerts) {
-        alerts[i]["watch_id"] = watch_id;
+        alerts[i]["watchId"] = watchId;
     }
     return Alert.bulkCreate(alerts);
 }
 
-exports.isWatchExist = function (watch_id) {
-    return Watch.count({ where: { watch_id: watch_id } })
+exports.isWatchExist = function (watchId) {
+    return Watch.count({ where: { watchId: watchId } })
         .then(count => {
             if (count != 0) {
                 return true;
@@ -32,7 +32,7 @@ exports.isWatchExist = function (watch_id) {
 exports.updateWatch = (watch) => {
     return Watch.update(watch, {
         where: {
-            watch_id: watch.watch_id
+            watchId: watch.watchId
         }
     });
 }
@@ -53,10 +53,10 @@ exports.deleteWatch = (watchId) => {
     });
 }
 
-exports.deleteAlerts = (watch_id) => {
+exports.deleteAlerts = (watchId) => {
     return Alert.destroy({
         where: {
-            watch_id: watch_id
+            watchId: watchId
         }
     });
 }

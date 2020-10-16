@@ -1,11 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
   const alert = sequelize.define("alert", {
-    alert_id: {
+    alertId: {
       primaryKey: true,
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
     },
-    field_type: {
+    fieldType: {
       type: Sequelize.STRING,
       allowNull: false,
     },

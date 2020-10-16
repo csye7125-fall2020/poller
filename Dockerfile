@@ -12,5 +12,4 @@ RUN npm install
 
 COPY src /app/src
 
-# CMD [ "node", "src/server.js" ]
 CMD ./src/wrapper.sh
