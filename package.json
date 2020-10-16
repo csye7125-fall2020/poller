@@ -2,9 +2,9 @@
   "name": "poller",
   "version": "1.0.0",
   "description": "Poller microservice for weather data consumer and producer on Kafka topic",
-  "main": "server.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "start": "node src/service/consumer & node src/service/producer"
   },
   "repository": {
     "type": "git",

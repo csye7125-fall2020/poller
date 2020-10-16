@@ -4,6 +4,11 @@ const config = require("../config/config");
 const userService = require("./UserService");
 const watchService = require("./WatchService");
 
+const db = require("../db/db-config");
+db.sequelize.sync({ force: false }).then(() => {
+    console.log("Synchronizing Database...");
+});
+
 try {
     const Consumer = kafka.Consumer;
     const client = new kafka.KafkaClient();

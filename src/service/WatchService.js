@@ -20,11 +20,6 @@ exports.addAlert = (alerts, watch_id) => {
 }
 
 exports.isWatchExist = function (watch_id) {
-    // return Watch.findAll({
-    //     where: {
-    //         watch_id: watch_id
-    //     }
-    // });
     return Watch.count({ where: { watch_id: watch_id } })
         .then(count => {
             if (count != 0) {
@@ -67,10 +62,10 @@ exports.deleteAlerts = (watch_id) => {
 }
 
 exports.getWatchesZipGrouped = function () {
-    return Watch.findAll({
-        attributes: ['zipcode']
-    },
-                            { group : ['zipcode'] });
+    return Watch.findAll(
+        { attributes: ['zipcode'] },
+        { group: ['zipcode'] }
+    );
 }
 
 exports.getAllWatches = function () {

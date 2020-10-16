@@ -7,7 +7,7 @@ const request = require('request');
 var schedule = require("node-schedule");
 const { watch } = require("fs");
 
-const cronMinutes = process.env.cron || "1";
+const cronMinutes = process.env.cronminutes || "1";
 const cronExpression = "*/" + cronMinutes + " * * * *";
 var j = schedule.scheduleJob(cronExpression, function () {
     console.log(
@@ -22,20 +22,19 @@ kafkaProducer("");
 
 function kafkaProducer(message) {
     try {
-        const Producer = kafka.Producer;
-        const client = new kafka.KafkaClient();
-        const producer = new Producer(client);
-        //   const kafka_producer_topic = "test";
-        console.log("Kafka producer topic: " + config.kafka_producer_topic);
-
-
-
+        
         // var zipcodes = watchService.getWatchesZipGrouped();
         // console.log("zip codes:" + zipcodes);
         // var watches = watchService.getAllWatches();
         // console.log("watches:" + watches);
 
         /* Testing start 
+        const Producer = kafka.Producer;
+        const client = new kafka.KafkaClient();
+        const producer = new Producer(client);
+        //   const kafka_producer_topic = "test";
+        console.log("Kafka producer topic: " + config.kafka_producer_topic);
+
         let payloads = [
             {
                 topic: config.kafka_producer_topic,
@@ -98,27 +97,36 @@ function kafkaProducer(message) {
                                                 },
                                             ];
 
-                                            console.log("Payload:" + JSON.stringify(watchitem));
+                                            const Producer = kafka.Producer;
+                                            const client = new kafka.KafkaClient();
+                                            const producer = new Producer(client);
+                                            //   const kafka_producer_topic = "test";
+                                            console.log("Kafka producer topic: " + config.kafka_producer_topic);
 
-                                            producer.on("ready", function () {
-                                                console.log("producer ready");
-                                                let push_status = producer.send(payloads, (err, data) => {
-                                                    console.log("producer sent");
-                                                    if (err) {
-                                                        console.log(
-                                                            "[kafka-producer -> " +
-                                                            config.kafka_producer_topic +
-                                                            "]: broker update failed"
-                                                        );
-                                                    } else {
-                                                        console.log(
-                                                            "[kafka-producer -> " +
-                                                            config.kafka_producer_topic +
-                                                            "]: broker update success"
-                                                        );
-                                                    }
+                                            console.log("Payload:" + JSON.stringify(watchitem));
+                                            try {
+                                                producer.on("ready", function () {
+                                                    // console.log("producer ready");
+                                                    let push_status = producer.send(payloads, (err, data) => {
+                                                        // console.log("producer sent");
+                                                        if (err) {
+                                                            console.log(
+                                                                "[kafka-producer -> " +
+                                                                config.kafka_producer_topic +
+                                                                "]: broker update failed"
+                                                            );
+                                                        } else {
+                                                            console.log(
+                                                                "[kafka-producer -> " +
+                                                                config.kafka_producer_topic +
+                                                                "]: broker update success"
+                                                            );
+                                                        }
+                                                    });
                                                 });
-                                            });
+                                            } catch (e) {
+                                                console.log(e);
+                                            }
 
                                             producer.on("error", function (err) {
                                                 console.log(err);
