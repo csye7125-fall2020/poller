@@ -75,6 +75,6 @@ exports.getWatchesZipGrouped = function () {
 
 exports.getAllWatches = function () {
     return Watch.findAll(
-        { plain: true, raw: true, nest: true }
+        { raw: true, nest: true }
     );
 }
