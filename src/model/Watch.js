@@ -13,6 +13,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    isDeleted: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
+    }
   });
   return watch;
 };

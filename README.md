@@ -101,6 +101,6 @@ Download Kafka binary from above URL and setup services with following commands.
 
 - Run the image
     ```
-    sudo docker run -e cronminutes='5' -it --name poller --network="host" <your docker username>/poller:latest
+    sudo docker run -e cronminutes='5' -e DBUser='<db username>' -e DBPassword='<db password>' -e DBName='csye7125_poller' -e DBHost='localhost' -it --name poller --network="host" <your docker username>/poller:latest
     ```
     *`cronminutes` environment variable is used to run producer at every n minutes*

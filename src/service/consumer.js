@@ -57,29 +57,40 @@ try {
         var watchJson = JSON.parse(message.value);
         console.log("watchjson id: " + watchJson.watchId)
 
-        if (!watchService.isWatchExist(watchJson.watchId)) {
-            watchService.addWatch(watchJson)
-                .then(watch_data => {
-                    watchService.addAlert(watchJson.alerts, watch_data.watchId)
-                        .then(alert_data => {
-                            console.log("watch and alert saved successfully");
+        watchService.isWatchExist(watchJson.watchId)
+            .then(existingWatchCount => {
+                if (existingWatchCount <= 0) {
+                    watchService.addWatch(watchJson)
+                        .then(watch_data => {
+                            watchService.addAlert(watchJson.alerts, watch_data.watchId)
+                                .then(alert_data => {
+                                    console.log("watch and alert saved successfully");
+                                }).catch(e => console.log("error", e));
                         }).catch(e => console.log("error", e));
-                }).catch(e => console.log("error", e));
-            // })
-            // .catch(error => {
-            //     res.status(400).json({ response: error.message });
-            // });
-        } else {
-            watchService.deleteAlerts(watchJson.watchId);
-            watchService.updateWatch(watchJson)
-                .then(watch_data => {
-                    watchService.addAlert(watchJson.alerts, watchJson.watchId)
-                        .then(alert_data => {
-                            console.log("watch and alert saved successfully");
-                        }).catch(e => console.log("error", e));
-                }).catch(e => console.log("error", e));
+                    // })
+                    // .catch(error => {
+                    //     res.status(400).json({ response: error.message });
+                    // });
+                } else {
+                    watchService.deleteAlerts(watchJson.watchId);
+                    if (watchJson.isDeleted == true) {
+                        watchService.deleteWatch(watchJson.watchId)
+                            .then(watch_data => {
+                                console.log("watch and alert deleted successfully");
+                            }).catch(e => console.log("error", e));
+                    } else {
+                        watchService.updateWatch(watchJson)
+                            .then(watch_data => {
+                                watchService.addAlert(watchJson.alerts, watchJson.watchId)
+                                    .then(alert_data => {
+                                        console.log("watch and alert updated successfully");
+                                    }).catch(e => console.log("error", e));
+                            }).catch(e => console.log("error", e));
+                    }
+
+                }
+            });
         
-        }
         
     });
     consumer.on("error", function (err) {

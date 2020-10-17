@@ -20,13 +20,16 @@ exports.addAlert = (alerts, watchId) => {
 }
 
 exports.isWatchExist = function (watchId) {
-    return Watch.count({ where: { watchId: watchId } })
-        .then(count => {
-            if (count != 0) {
-                return true;
-            }
-            return false;
-        });
+    return Watch.count({
+        where: { watchId: watchId }
+    });
+    // Watch.count({ where: { watchId: watchId } })
+    //     .then(count => {
+    //         if (count != 0) {
+    //             return true;
+    //         }
+    //         return false;
+    //     });
 }
 
 exports.updateWatch = (watch) => {
@@ -73,10 +76,23 @@ exports.getAllWatches = function () {
         {
             // raw: true,
             // nest: true,
+            where: {
+                isDeleted: false
+            },
             include:
                 [
                     "alerts"
                 ]
         },        
     );
+}
+
+exports.getWatch = (watchId) => {
+    return Watch.findOne({
+        where: {
+            watchId: watchId,
+            isDeleted: false
+        },
+        include: ["alerts"]
+    })
 }
