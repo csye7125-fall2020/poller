@@ -1,0 +1,28 @@
+{
+  "name": "poller",
+  "version": "1.0.0",
+  "description": "Poller microservice for weather data consumer and producer on Kafka topic",
+  "scripts": {
+    "test": "npm test",
+    "start": "node src/service/consumer & node src/service/producer"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kinnarrk/poller.git"
+  },
+  "author": "Kinnar & Rajashree",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kinnarrk/poller/issues"
+  },
+  "homepage": "https://github.com/kinnarrk/poller#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "debug": "~2.6.9",
+    "kafka-node": "^5.0.0",
+    "mysql2": "^2.2.5",
+    "node-schedule": "^1.3.2",
+    "request": "^2.88.2",
+    "sequelize": "^6.3.5"
+  }
+}
