@@ -70,6 +70,13 @@ exports.getWatchesZipGrouped = function () {
 
 exports.getAllWatches = function () {
     return Watch.findAll(
-        { raw: true, nest: true }
+        {
+            // raw: true,
+            // nest: true,
+            include:
+                [
+                    "alerts"
+                ]
+        },        
     );
 }

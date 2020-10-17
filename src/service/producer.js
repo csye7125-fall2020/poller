@@ -80,20 +80,22 @@ function kafkaProducer(message) {
 
                     request('http://api.openweathermap.org/data/2.5/weather?zip=' + zipcode + ',us&appid=d21f9ac0bc41005e8c7f680bbf5fbd58&units=imperial', function (error, response, body) {
                         if (!error && response.statusCode == 200) {
-                            // console.log("resp body" + body)
 
-                            var mainData = body.main;
+                            var mainData = JSON.parse(response.body).main;
+                            // console.log("main data:" + JSON.stringify(mainData));
 
                             watchService.getAllWatches()
                                 .then(watches => {
                                     // console.log("watches:" + JSON.stringify(watches));
                                     watches.forEach((watchitem) => {
-                                        if (watchitem.zipcode == zipcode) {
-                                            watchitem["main"] = mainData;
+                                        if (watchitem.zipcode == zipcode) {                                    
+                                            var watch = watchitem.toJSON();
+                                            watch["main"] = mainData;
+
                                             let payloads = [
                                                 {
                                                     topic: config.kafka_producer_topic,
-                                                    messages: JSON.stringify(watchitem),
+                                                    messages: JSON.stringify(watch),
                                                 },
                                             ];
 
@@ -101,9 +103,9 @@ function kafkaProducer(message) {
                                             const client = new kafka.KafkaClient();
                                             const producer = new Producer(client);
                                             //   const kafka_producer_topic = "test";
-                                            console.log("Kafka producer topic: " + config.kafka_producer_topic);
+                                            // console.log("Kafka producer topic: " + config.kafka_producer_topic);
 
-                                            console.log("Payload:" + JSON.stringify(watchitem));
+                                            // console.log("Payload:" + JSON.stringify(watch));
                                             try {
                                                 producer.on("ready", function () {
                                                     // console.log("producer ready");

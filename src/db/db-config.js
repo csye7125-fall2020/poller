@@ -26,7 +26,7 @@ db.alert = require("../model/Alert")(sequelize, Sequelize);
 db.watch.hasMany(db.alert, {
     onUpdate: "cascade",
     onDelete: "cascade",
-    foreignKey: { name: "watch_id", allowNull: false },
+    foreignKey: { name: "watchId", allowNull: false },
 });
 
 
