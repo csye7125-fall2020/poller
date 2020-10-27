@@ -100,7 +100,7 @@ function kafkaProducer(message) {
                                             ];
 
                                             const Producer = kafka.Producer;
-                                            const client = new kafka.KafkaClient();
+                                            const client = new kafka.KafkaClient({ kafkaHost: config.kafka_host });
                                             const producer = new Producer(client);
                                             //   const kafka_producer_topic = "test";
                                             // console.log("Kafka producer topic: " + config.kafka_producer_topic);
