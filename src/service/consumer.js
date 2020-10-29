@@ -10,23 +10,49 @@ db.sequelize.sync({ force: false }).then(() => {
 });
 
 try {
-    const Consumer = kafka.Consumer;
-    const client = new kafka.KafkaClient({ kafkaHost: config.kafka_host });
-    let consumer = new Consumer(
-        client,
-        [{ topic: config.kafka_consumer_topic, partition: 0 }],
-        {
-            autoCommit: true,
-            fetchMaxWaitMs: 1000,
-            fetchMaxBytes: 1024 * 1024,
-            encoding: "utf8",
-            fromOffset: false,
-        }
-    );
-    consumer.on("message", async function (message) {
+    var options = {
+        kafkaHost: config.kafka_host,
+        groupId: 'WatchGroup',
+        sessionTimeout: 15000,
+        protocol: ['roundrobin'],
+        fromOffset: 'earliest' // equivalent of auto.offset.reset valid values are 'none', 'latest', 'earliest'
+    };
+    var consumerGroup = new kafka.ConsumerGroup(options, config.kafka_consumer_topic);
+    // consumerGroup.on("message", async function (message) {
+    //     console.log(
+    //         '%s read msg Topic="%s" Partition=%s Offset=%d',
+    //         this.client.clientId,
+    //         message.topic,
+    //         message.partition,
+    //         message.offset
+    //     );
+    //     console.log("consumerGroup kafka-> ", message.value);
+    // });
+
+    // const Consumer = kafka.Consumer;
+    // const client = new kafka.KafkaClient({ kafkaHost: config.kafka_host });
+    // let consumer = new Consumer(
+    //     client,
+    //     [{ topic: config.kafka_consumer_topic, partition: 0 }],
+    //     {
+    //         autoCommit: true,
+    //         fetchMaxWaitMs: 1000,
+    //         fetchMaxBytes: 1024 * 1024,
+    //         encoding: "utf8",
+    //         fromOffset: false,
+    //     }
+    // );
+
+    consumerGroup.on("message", async function (message) {
         // console.log("here");
         console.log("kafka-> ", message.value);
-
+        console.log(
+            '%s read msg Topic="%s" Partition=%s Offset=%d',
+            this.client.clientId,
+            message.topic,
+            message.partition,
+            message.offset
+        );
         // Test JSON
         // var watchJson = '{'+
         //                     '"watchId": "d290f1ee-6c54-4b01-90e6-d701748f0851",'+
