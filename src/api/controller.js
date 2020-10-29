@@ -1,6 +1,6 @@
 "use strict";
 
-var properties = require("../package.json");
+var properties = require("../../package.json");
 var weather = require("../service/weather");
 
 var controllers = {
