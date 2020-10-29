@@ -101,7 +101,16 @@ function kafkaProducer(message) {
 
                                             const Producer = kafka.Producer;
                                             const client = new kafka.KafkaClient({ kafkaHost: config.kafka_host });
-                                            const producer = new Producer(client);
+                                            var options = {
+                                                // Configuration for when to consider a message as acknowledged, default 1
+                                                requireAcks: 1,
+                                                // The amount of time in milliseconds to wait for all acks before considered, default 100ms
+                                                ackTimeoutMs: 100,
+                                                // Partitioner type (default = 0, random = 1, cyclic = 2, keyed = 3, custom = 4), default 0
+                                                // random = 1 actually works for sending on different partitions
+                                                partitionerType: 1
+                                            }
+                                            const producer = new Producer(client, options);
                                             //   const kafka_producer_topic = "test";
                                             // console.log("Kafka producer topic: " + config.kafka_producer_topic);
 
@@ -123,6 +132,7 @@ function kafkaProducer(message) {
                                                                 config.kafka_producer_topic +
                                                                 "]: broker update success"
                                                             );
+                                                            console.log('sent data -> {"topic":{"partition":offset}}: ' + JSON.stringify(data));
                                                         }
                                                     });
                                                 });
