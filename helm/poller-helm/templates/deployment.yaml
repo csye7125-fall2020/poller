@@ -29,16 +29,16 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: server_port
-                  name: rds-config
+                  name: rds-config-poller
             - name: DBHost
               valueFrom:
                 configMapKeyRef:
-                  name: rds-config
+                  name: rds-config-poller
                   key: db_host
             - name: DBName
               valueFrom:
                 configMapKeyRef:
-                  name: rds-config
+                  name: rds-config-poller
                   key: db_name
             - name: DBUser
               valueFrom:
@@ -55,16 +55,18 @@ spec:
             - containerPort: 3000
               protocol: TCP
           livenessProbe:
-            tcpSocket:
-              port: 9092
+            httpGet:
+              port: 3000
+              path: /health
+              scheme: HTTP
             initialDelaySeconds: 20
             periodSeconds: 20
           readinessProbe:
-            tcpSocket:
-              port: 9092
+            httpGet:
+              port: 3000
+              path: /health
+              scheme: HTTP
             initialDelaySeconds: 20
             periodSeconds: 20
       imagePullSecrets:
         - name: dockerregistrykeypoller
-
-
