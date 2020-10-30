@@ -13,3 +13,5 @@ RUN npm install
 COPY src /app/src
 
 CMD ./src/wrapper.sh
+
+EXPOSE 3000
