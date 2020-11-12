@@ -23,13 +23,6 @@ exports.isWatchExist = function (watchId) {
     return Watch.count({
         where: { watchId: watchId }
     });
-    // Watch.count({ where: { watchId: watchId } })
-    //     .then(count => {
-    //         if (count != 0) {
-    //             return true;
-    //         }
-    //         return false;
-    //     });
 }
 
 exports.updateWatch = (watch) => {
