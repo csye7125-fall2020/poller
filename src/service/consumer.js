@@ -1,50 +1,36 @@
 const kafka = require("kafka-node");
-const bp = require("body-parser");
 const config = require("../config/config");
-const userService = require("./UserService");
 const watchService = require("./WatchService");
+const client = require('prom-client');
 
-const db = require("../db/db-config");
-db.sequelize.sync({ force: false }).then(() => {
-    console.log("Synchronizing Database...");
+// const db = require("../db/db-config");
+// db.sequelize.sync({force: false}).then(() => {
+//     console.log("Synchronizing Database...");
+// });
+const consumedCounter = new client.Counter({
+    name: 'count_consumed_messages',
+    help: 'The total number of messages consumed'
 });
 
+const histogram = require("../server");
 try {
-    var options = {
+    const end = histogram.startTimer();
+
+    const options = {
         kafkaHost: config.kafka_host,
         groupId: 'WatchGroup',
         sessionTimeout: 15000,
         protocol: ['roundrobin'],
         fromOffset: 'earliest' // equivalent of auto.offset.reset valid values are 'none', 'latest', 'earliest'
     };
-    var consumerGroup = new kafka.ConsumerGroup(options, config.kafka_consumer_topic);
-    // consumerGroup.on("message", async function (message) {
-    //     console.log(
-    //         '%s read msg Topic="%s" Partition=%s Offset=%d',
-    //         this.client.clientId,
-    //         message.topic,
-    //         message.partition,
-    //         message.offset
-    //     );
-    //     console.log("consumerGroup kafka-> ", message.value);
-    // });
-
-    // const Consumer = kafka.Consumer;
-    // const client = new kafka.KafkaClient({ kafkaHost: config.kafka_host });
-    // let consumer = new Consumer(
-    //     client,
-    //     [{ topic: config.kafka_consumer_topic, partition: 0 }],
-    //     {
-    //         autoCommit: true,
-    //         fetchMaxWaitMs: 1000,
-    //         fetchMaxBytes: 1024 * 1024,
-    //         encoding: "utf8",
-    //         fromOffset: false,
-    //     }
-    // );
+    const consumerGroup = new kafka.ConsumerGroup(options, config.kafka_consumer_topic);
 
     consumerGroup.on("message", async function (message) {
-        // console.log("here");
+        consumedCounter.inc();
+
+        const sec = end();
+        console.log("Consumer response time for Consumer: ", sec);
+
         console.log("kafka-> ", message.value);
         console.log(
             '%s read msg Topic="%s" Partition=%s Offset=%d',
@@ -53,35 +39,9 @@ try {
             message.partition,
             message.offset
         );
-        // Test JSON
-        // var watchJson = '{'+
-        //                     '"watchId": "d290f1ee-6c54-4b01-90e6-d701748f0851",'+
-        //                     '"userId": "d290f1ee-6c54-4b01-90e6-d701748f0851", '+
-        //                     '"createdAt": "2016-08-29T09:12:33.001Z", '+
-        //                     '"updatedAt": "2016-08-29T09:12:33.001Z", '+
-        //                     '"zipcode": "02115",'+
-        //                     '"alerts": ['+
-        //                         '{'+
-        //                             '"alertId": "d290f1ee-6c54-4b01-90e6-d701748f0851",'+
-        //                             '"createdAt": "2016-08-29T09:12:33.001Z",'+
-        //                             '"updatedAt": "2016-08-29T09:12:33.001Z",'+
-        //                             '"fieldType": "temp_min",'+
-        //                             '"operator": "lt",'+
-        //                             '"value": 40'+
-        //                         '},'+
-        //                         '{'+
-        //                             '"alertId": "d290f1ee-6c54-4b01-90e6-d701748f0852",'+
-        //                             '"createdAt": "2016-08-29T09:12:33.001Z",'+
-        //                             '"updatedAt": "2016-08-29T09:12:33.001Z",'+
-        //                             '"fieldType": "temp_max",'+
-        //                             '"operator": "gt",'+
-        //                             '"value": 80'+
-        //                         '}'+
-        //                     ']'+
-        //                 '}';
 
-        var watchJson = JSON.parse(message.value);
-        console.log("watchjson id: " + watchJson.watchId)
+        const watchJson = JSON.parse(message.value);
+        console.log("watchJson id: " + watchJson.watchId)
 
         watchService.isWatchExist(watchJson.watchId)
             .then(existingWatchCount => {
@@ -93,13 +53,9 @@ try {
                                     console.log("watch and alert saved successfully");
                                 }).catch(e => console.log("error", e));
                         }).catch(e => console.log("error", e));
-                    // })
-                    // .catch(error => {
-                    //     res.status(400).json({ response: error.message });
-                    // });
                 } else {
                     watchService.deleteAlerts(watchJson.watchId);
-                    if (watchJson.isDeleted == true) {
+                    if (watchJson.isDeleted === true) {
                         watchService.deleteWatch(watchJson.watchId)
                             .then(watch_data => {
                                 console.log("watch and alert deleted successfully");
@@ -116,12 +72,12 @@ try {
 
                 }
             });
-        
-        
+
+
     });
-    consumer.on("error", function (err) {
-        console.log("error", err);
+    consumerGroup.on("error", function (err) {
+        console.error("Error in Kafka Consumer", err.message);
     });
 } catch (e) {
-    console.log(e);
+    console.error("Exception in Kafka Consumer", e.message);
 }

@@ -27,6 +27,18 @@ rdsdata:
 initialDelaySeconds: 15
 periodSeconds: 30
 
+serviceAccount:
+  name: poller-sa
+
+rbac:
+  create: true
+
+role:
+  name: poller-role
+
+roleBinding:
+  name: poller-rb
+
 nodeSelector: {}
 
 tolerations: []
