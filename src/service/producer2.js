@@ -22,17 +22,10 @@ kafkaProducer("");
 
 function kafkaProducer(message) {
     try {
-
-        // var zipcodes = watchService.getWatchesZipGrouped();
-        // console.log("zip codes:" + zipcodes);
-        // var watches = watchService.getAllWatches();
-        // console.log("watches:" + watches);
-
         /* Testing start */
         const Producer = kafka.Producer;
         const client = new kafka.KafkaClient();
         const producer = new Producer(client);
-        //   const kafka_producer_topic = "test";
         console.log("Kafka producer topic: " + config.kafka_producer_topic);
 
         // Test JSON
