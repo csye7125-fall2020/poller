@@ -26,5 +26,8 @@
     "prom-client": "^12.0.0",
     "request": "^2.88.2",
     "sequelize": "^6.3.5"
+  },
+  "devDependencies": {
+    "log4js": "^6.3.0"
   }
 }

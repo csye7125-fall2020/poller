@@ -2,17 +2,14 @@ const kafka = require("kafka-node");
 const config = require("../config/config");
 const watchService = require("./WatchService");
 const client = require('prom-client');
+const logger = require("../server").logger;
 
-// const db = require("../db/db-config");
-// db.sequelize.sync({force: false}).then(() => {
-//     console.log("Synchronizing Database...");
-// });
 const consumedCounter = new client.Counter({
     name: 'count_consumed_messages',
     help: 'The total number of messages consumed'
 });
 
-const histogram = require("../server");
+const histogram = require("../server").histogram;
 try {
     const end = histogram.startTimer();
 
@@ -72,8 +69,6 @@ try {
 
                 }
             });
-
-
     });
     consumerGroup.on("error", function (err) {
         console.error("Error in Kafka Consumer", err.message);
