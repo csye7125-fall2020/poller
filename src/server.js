@@ -3,6 +3,17 @@ const app = express();
 const bodyParser = require("body-parser");
 const client = require("prom-client");
 const register = new client.Registry();
+const log4js = require('log4js');
+
+log4js.configure({
+  appenders: {
+    err: { type: 'stderr' },
+    out: { type: 'stdout' }
+  },
+  categories: { default: { appenders: ['err', 'out'], level: 'info' } }
+});
+
+const logger = log4js.getLogger("poller");
 
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics({ register });
@@ -11,10 +22,13 @@ register.setDefaultLabels({
   app: 'poller'
 })
 
-module.exports = new client.Histogram({
-  name: 'timed_kafka_calls',
-  help: 'The time taken to process database queries'
-});
+module.exports = {
+  histogram: new client.Histogram({
+              name: 'timed_kafka_calls',
+              help: 'The time taken to process database queries'
+            }),
+  logger: logger
+}
 
 const db = require("./db/db-config");
 db.sequelize.sync({ force: false }).then(() => {

@@ -4,12 +4,13 @@ const watchService = require("./WatchService");
 const request = require('request');
 const client = require('prom-client');
 const schedule = require("node-schedule");
+const logger = require("../server").logger;
 
 const producedCounter = new client.Counter({
     name: 'count_produced_messages',
     help: 'The total number of messages produced'
 });
-const histogram = require("../server");
+const histogram = require("../server").histogram;
 
 const cronMinutes = process.env.cronminutes || "1";
 const cronExpression = "*/" + cronMinutes + " * * * *";
