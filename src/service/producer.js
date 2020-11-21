@@ -12,7 +12,7 @@ const logger = logger_util.logger;
 const histogram = metrics_util.histogram;
 
 const producedCounter = new client.Counter({
-    name: 'count_produced_messages',
+    name: 'producer_count_produced_messages',
     help: 'The total number of messages produced'
 });
 
