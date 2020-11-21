@@ -95,7 +95,7 @@ pipeline {
     }
     stage('Helm upgrade') {
       steps{
-        sh "./linux-amd64/helm upgrade poller ./helm/poller-helm/ -f helm/my-values.yaml"
+        sh "./linux-amd64/helm upgrade --install poller ./helm/poller-helm/ -f helm/my-values.yaml"
       }
     }
   }
