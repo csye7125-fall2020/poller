@@ -9,7 +9,7 @@ const logger = logger_util.logger;
 const histogram = metrics_util.histogram;
 
 const consumedCounter = new client.Counter({
-    name: 'count_consumed_messages',
+    name: 'poller_count_consumed_messages',
     help: 'The total number of messages consumed'
 });
 
